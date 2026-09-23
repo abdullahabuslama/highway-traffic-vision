@@ -1,0 +1,61 @@
+# How the analysis runs. Everything here is read by traffic_flow.config;
+# nothing in the code hard-codes these numbers.
+
+detector:
+  # Small COCO model. Compared against yolo11m and yolo11l on the same frames:
+  # 11s found 687 on-road vehicles, 11m 605, 11l 713. The largest model gains
+  # 4% for four times the run time, so the small one is the right trade.
+  model: yolo11s.pt
+
+  # The important one. Source frames are 320x240, so the detector is fed a
+  # heavily enlarged copy. Distant cars are ~10 px wide at native size and are
+  # invisible to the network there. Measured on-road detections per frame:
+  # 640 -> 11, 960 -> 17, 1280 -> 19, 1600 -> 13. Past 1280 it gets worse again.
+  imgsz: 1280
+
+  # Deliberately low. Small far-away vehicles score badly, so we let weak boxes
+  # through here and rely on the tracker to drop the ones that do not persist.
+  # Checked against hand counts: 0.15 matched them best, and raising it to 0.35
+  # lost a quarter of the vehicles in queued traffic.
+  conf: 0.15
+  iou: 0.5
+
+  # cuda:0 when a GPU is present, cpu otherwise.
+  device: auto
+  max_detections: 300
+
+  # Multi-scale test-time augmentation. Off by default; turn on for the final
+  # run if the extra recall on distant vehicles is worth roughly 2x the time.
+  augment: false
+
+  # COCO class id -> the word we report it as. Adding a class is a line here.
+  class_map:
+    2: car
+    3: motorcycle
+    5: bus
+    7: truck
+
+tracker:
+  # ByteTrack, loosened for 10 fps. The gap between frames is 100 ms, in which a
+  # motorway vehicle moves nearly 3 m, so matching has to tolerate large jumps
+  # and boxes that barely overlap their own position in the next frame.
+  track_activation_threshold: 0.3
+  lost_track_buffer: 15
+  minimum_iou_threshold: 0.1
+  minimum_consecutive_frames: 2
+
+  # Detections above this are matched first, weaker ones only keep existing
+  # vehicles alive. Set well below the library default of 0.6 because these
+  # vehicles are small and rarely score that high.
+  high_confidence_threshold: 0.35
+
+metrics:
+  # A vehicle seen in fewer frames than this is treated as detector noise.
+  min_track_frames: 3
+
+  # Nothing on this road goes faster than this; anything above it is a tracking
+  # mistake, usually an identity swapped between two different vehicles.
+  max_plausible_kph: 160.0
+
+  # How many lanes the road covers is not here on purpose: it comes from the
+  # lanes drawn in the camera config, so there is only one place to change it.

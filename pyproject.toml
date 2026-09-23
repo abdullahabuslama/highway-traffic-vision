@@ -1,0 +1,64 @@
+[build-system]
+# 77 or newer, because the licence is given below as a plain SPDX string.
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "traffic-flow"
+version = "0.1.0"
+description = "Traffic flow analysis on fixed-camera highway video: counts, speed, density and congestion level."
+readme = "README.md"
+requires-python = ">=3.11"
+# AGPL because the vehicle detector, Ultralytics YOLO, is AGPL-3.0. See README.
+license = "AGPL-3.0-or-later"
+license-files = ["LICENSE"]
+authors = [{ name = "Abdullah Abuslama" }]
+keywords = ["computer-vision", "traffic", "yolo", "object-tracking", "intelligent-transportation"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Image Recognition",
+]
+dependencies = [
+    "ultralytics>=8.3",
+    "supervision>=0.30",
+    # ByteTrack lives here now; supervision deprecated its own copy in 0.28.
+    "trackers>=2.6",
+    "opencv-python>=4.10",
+    "numpy>=1.26",
+    "pandas>=2.2",
+    "pyarrow>=16",
+    "scikit-learn>=1.5",
+    "scipy>=1.13",
+    "matplotlib>=3.9",
+    "pyyaml>=6.0",
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "python-multipart>=0.0.9",
+    "typer>=0.12",
+    "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.6"]
+
+[project.urls]
+Repository = "https://github.com/abdullahabuslama/highway-traffic-vision"
+
+[project.scripts]
+traffic-flow = "traffic_flow.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff.lint]
+# FastAPI's documented way of declaring an upload parameter is a call in the
+# default, so B008 fires on every endpoint. It is the framework's idiom, not a
+# mistake.
+ignore = ["B008"]

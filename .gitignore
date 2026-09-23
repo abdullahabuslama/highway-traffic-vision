@@ -1,0 +1,58 @@
+# --- The dataset --------------------------------------------------------------
+# The UCSD traffic videos have no licence, so they are not ours to redistribute.
+# Download them yourself into dataset/ - see "Get the dataset" in the README.
+dataset/
+dataset.zip
+*.avi
+
+# --- Model weights ------------------------------------------------------------
+# YOLO weights download automatically on first run. They are also large
+# (19 MB for the small model, 50 MB for the large one).
+*.pt
+
+# --- Outputs ------------------------------------------------------------------
+# Only the curated results are tracked. Anything else a script writes into
+# outputs/ stays on your machine.
+outputs/*
+!outputs/figures/
+!outputs/demos/
+!outputs/calibration_overlay.png
+!outputs/clip_features.parquet
+!outputs/evaluation.csv
+!outputs/evaluation_predictions.csv
+
+# --- Secrets and machine-specific settings ------------------------------------
+# Nothing in this project needs them today. Listed so that one added later can
+# never be committed by accident.
+.env
+.env.*
+*.pem
+*.key
+secrets.*
+
+# --- Python -------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# --- Virtual environments -----------------------------------------------------
+.venv/
+venv/
+env/
+
+# --- Tool caches --------------------------------------------------------------
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# --- Editors and operating systems --------------------------------------------
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini

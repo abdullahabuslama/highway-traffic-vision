@@ -1,0 +1,11 @@
+# Store text files with LF line endings in the repository, whatever the
+# machine they were written on. Without this, files edited on Windows arrive
+# with CRLF endings and every line shows as changed in the diff.
+* text=auto
+
+# Never treat these as text: a line-ending conversion would corrupt them.
+*.png binary
+*.mp4 binary
+*.pkl binary
+*.parquet binary
+*.jpg binary
