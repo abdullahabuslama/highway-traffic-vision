@@ -246,8 +246,24 @@ detect at native size. Enlarging each frame before detection makes those vehicle
 |---|---|---|---|---|
 | vehicles found per frame | 11 | 17 | **19** | 13 |
 
-Larger models were tried and rejected. On the same frames YOLO11s found 687 on-road
-vehicles and YOLO11l found 713 — 4% more, for four times the run time.
+Bigger models were tested and did worse. A first check on 36 frames suggested the large
+model found 4% more vehicles, so it was run through the whole pipeline on all 254 clips and
+scored the same way as the small one:
+
+| | YOLO11s — used | YOLO11m | YOLO11l |
+|---|---|---|---|
+| on-road vehicles, 36-frame check | 687 | 605 | 713 |
+| vehicles tracked, all 254 clips | **4,717** | not run | 4,527 |
+| congestion accuracy | **95.3%** | not run | 92.9% |
+| heavy clips caught | **39 of 44** | not run | 34 of 44 |
+| time for all 254 clips | **30 min** | not run | 74 min |
+
+The large model finds more boxes in a single frame, but fewer of them last the three frames
+a vehicle needs before it counts. It tracked 10% fewer vehicles in light traffic and no
+more in heavy traffic, where the small model misses cars. The medium model found fewer
+vehicles than the small one even in the first check, so it went no further. One caveat:
+the detection and tracking thresholds were tuned with the small model, and a large model
+tuned from scratch has not been tried.
 
 **Tracking.** ByteTrack, loosened for 10 frames per second. At that rate a motorway vehicle
 moves nearly three metres between frames, so its box barely overlaps its own position in
