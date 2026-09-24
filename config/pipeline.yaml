@@ -2,9 +2,9 @@
 # nothing in the code hard-codes these numbers.
 
 detector:
-  # Small COCO model. Compared against yolo11m and yolo11l on the same frames:
-  # 11s found 687 on-road vehicles, 11m 605, 11l 713. The largest model gains
-  # 4% for four times the run time, so the small one is the right trade.
+  # Small COCO model. Bigger ones were tested and did worse: run on all 254
+  # clips, yolo11l scored 92.9% against this model's 95.3% and took 74 minutes
+  # against 30. Full comparison in the README, under "How it works".
   model: yolo11s.pt
 
   # The important one. Source frames are 320x240, so the detector is fed a
